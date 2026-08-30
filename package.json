@@ -1,0 +1,44 @@
+{
+  "name": "landplanner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run start:dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspaces",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "prisma db seed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SharanSapkota/landplanner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SharanSapkota/landplanner/issues"
+  },
+  "homepage": "https://github.com/SharanSapkota/landplanner#readme",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "prisma": "^7.10.0"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.10.0": true,
+    "bcrypt@6.0.0": true,
+    "fsevents@2.3.3": true,
+    "prisma@7.10.0": true,
+    "unrs-resolver@1.12.2": true,
+    "msgpackr-extract@3.0.4": true
+  }
+}
