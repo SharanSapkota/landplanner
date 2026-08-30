@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --color-vellum: #eff0ea;
+  --color-ink: #1e2a22;
+  --color-survey-blue: #2b4c6f;
+  --color-flag-orange: #d9531e;
+  --color-verified-green: #3f6b4a;
+  --color-rule-gray: #c9c7bc;
+}
+
+@theme inline {
+  --color-vellum: var(--color-vellum);
+  --color-ink: var(--color-ink);
+  --color-survey-blue: var(--color-survey-blue);
+  --color-flag-orange: var(--color-flag-orange);
+  --color-verified-green: var(--color-verified-green);
+  --color-rule-gray: var(--color-rule-gray);
+
+  /* font-sans = Archivo (display/UI chrome), font-serif = Source Serif 4
+     (anything actually read as prose), font-mono = IBM Plex Mono (code
+     citations, section numbers, chunk references). */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+}
+
+body {
+  background: var(--color-vellum);
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

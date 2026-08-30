@@ -4,13 +4,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Organization {
   id        String     @id @default(uuid())
   name      String
   users     User[]
+  invites   Invite[]
   documents Document[]
   projects  Project[]
   createdAt DateTime   @default(now())
@@ -28,7 +28,33 @@ model User {
   projectsCreated    Project[]       @relation("CreatedBy")
   projectMemberships ProjectMember[]
   chatSessions       ChatSession[]
+  invitesSent        Invite[]        @relation("InvitedBy")
   createdAt          DateTime        @default(now())
+}
+
+// A pending invitation to join an Organization. New consultants are always
+// invited by an existing admin — there is no open self-enrollment flow
+// (CLAUDE.md section 11.5). `tokenHash` is a SHA-256 hash of the token that
+// was actually handed out; the raw token is never persisted.
+model Invite {
+  id             String       @id @default(uuid())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  email          String
+  role           String       @default("consultant") // 'consultant' | 'admin'
+
+  tokenHash      String       @unique
+
+  invitedBy      User         @relation("InvitedBy", fields: [invitedById], references: [id])
+  invitedById    String
+
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
 }
 
 model Jurisdiction {
@@ -120,6 +146,10 @@ model DocumentChunk {
 
   sectionTitle       String?
   content            String
+
+  // Not readable/writable through Prisma Client — see CLAUDE.md section 8.
+  // All access to this column must go through $queryRaw / $executeRaw.
+  embedding          Unsupported("vector(1536)")?
 
   consultantNote     String?
   isFlaggedImportant Boolean      @default(false)
