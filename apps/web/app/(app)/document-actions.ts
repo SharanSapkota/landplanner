@@ -52,6 +52,11 @@ export async function uploadDocumentAction(
       trustLevel: (trustLevel || undefined) as TrustLevel | undefined,
     });
   } catch (error) {
+    // Previously swallowed silently — the client only ever saw a generic
+    // message, with nothing in the server log to diagnose a real failure
+    // from. No secrets in scope here (file name/scope/docType only), so
+    // logging the raw error is safe.
+    console.error("[uploadDocumentAction] upload failed", { scope, jurisdictionId, projectId, error });
     return { error: error instanceof ApiError ? error.message : "Failed to upload document." };
   }
 
