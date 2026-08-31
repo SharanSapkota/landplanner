@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { uploadDocumentAction, type UploadDocumentState } from "@/app/(app)/document-actions";
-import type { DocumentScope, TrustLevel } from "@/lib/types";
+import type { DocumentScope, Jurisdiction, TrustLevel } from "@/lib/types";
 
 const TRUST_LEVELS: TrustLevel[] = ["unverified", "verified", "official"];
 
@@ -12,13 +12,19 @@ const labelClassName = "font-sans text-xs font-medium tracking-wide text-ink/70 
 
 export function DocumentUploadForm({
   scope,
-  jurisdictionId,
+  jurisdictions,
+  defaultJurisdictionId,
   projectId,
   revalidateTarget,
   docTypePlaceholder = "e.g. official_code, internal_note, client_submission",
 }: {
   scope: DocumentScope;
-  jurisdictionId?: string;
+  // Every non-"project" scope needs an explicit jurisdiction chosen right
+  // here in the form, independent of whatever a page-level filter happens
+  // to be set to — see decisions.md. Omit both for scope="project", where
+  // the jurisdiction is derived from the project itself, not picked here.
+  jurisdictions?: Jurisdiction[];
+  defaultJurisdictionId?: string;
   projectId?: string;
   revalidateTarget: string;
   docTypePlaceholder?: string;
@@ -37,9 +43,29 @@ export function DocumentUploadForm({
   return (
     <form ref={formRef} action={action} className="flex flex-col gap-3 rounded-md border border-rule-gray bg-white/40 p-4">
       <input type="hidden" name="scope" value={scope} />
-      {jurisdictionId ? <input type="hidden" name="jurisdictionId" value={jurisdictionId} /> : null}
       {projectId ? <input type="hidden" name="projectId" value={projectId} /> : null}
       <input type="hidden" name="revalidateTarget" value={revalidateTarget} />
+
+      {jurisdictions ? (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor={fieldId("jurisdictionId")} className={labelClassName}>
+            Jurisdiction
+          </label>
+          <select
+            id={fieldId("jurisdictionId")}
+            name="jurisdictionId"
+            required
+            defaultValue={defaultJurisdictionId}
+            className={fieldClassName}
+          >
+            {jurisdictions.map((jurisdiction) => (
+              <option key={jurisdiction.id} value={jurisdiction.id}>
+                {jurisdiction.name}, {jurisdiction.state}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor={fieldId("file")} className={labelClassName}>
