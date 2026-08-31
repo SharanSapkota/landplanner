@@ -2,7 +2,7 @@ CLAUDE.md
 .env
 decisions.md
 progress.md
-
+.claude
 /dist
 /node_modules
 /build
